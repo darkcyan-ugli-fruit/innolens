@@ -73,3 +73,8 @@ Unlike existing tools that are often either too complex or too narrow, **InnoLen
 
 ### 4. Export
 - Export to CSV: includes title, abstract, generated summary, type, date, authors, institutions, keywords, source, and more.
+
+## Usage
+
+conda activate innolens
+
