@@ -54,6 +54,16 @@ Unlike existing tools that are often either too complex or too narrow, **InnoLen
 
 ## Core Features & Architecture (Preview)
 
+soft_contact_lens_scouting_mvp/
+├── data/
+├── core/
+├── prompts/
+├── utils/
+├── app/
+├── requirements.txt
+└── README.md
+
+
 ### 1. Search Interface
 - Uses Lens.org and OpenAlex APIs (patents + publications).
 - Search by keyword, title, abstract, author, inventor, institution, year.
