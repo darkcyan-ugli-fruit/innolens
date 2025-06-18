@@ -4,3 +4,5 @@
 # Exclude folders
 delete/
 data/g_cpc_title.tsv
+data/PCDExcelReport26.xls
+data/no_careproducts_PCDExcelReport26.xls
