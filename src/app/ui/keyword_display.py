@@ -7,8 +7,8 @@ def display_final_keywords():
         st.header("Step 3 — Display Final Keywords")
         st.write("### Final Selected Keywords")
         st.write("Main Topic:", st.session_state.final_keywords['main_topic'])
-        st.write("OpenAlex Keywords:", st.session_state.final_keywords['openalex'])
-        st.write("PatentView Keywords:", st.session_state.final_keywords['patentview'])
+        st.write("Secondary Topic:", st.session_state.final_keywords['secondary_topic'])
+        # st.write("PatentView Keywords:", st.session_state.final_keywords['patentview'])
 
         st.markdown("""
         ### 🔄 Next Steps Pipeline (TO BE BUILT):

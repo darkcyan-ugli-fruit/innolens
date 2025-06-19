@@ -1,56 +1,41 @@
-# src/app/ui/keyword_review.py
-
 import streamlit as st
 
 def run_keyword_review():
-    if st.session_state.search_terms:
+    if "search_terms" in st.session_state and st.session_state.search_terms:
         st.header("Step 2 — Review Keywords & Manual Editing")
 
-        search_terms = st.session_state.search_terms
+        search_terms = st.session_state["search_terms"]
+        main_topic = search_terms.get("main_topic", [])
+        secondary_topic = search_terms.get("secondary_topic", [])
 
         st.subheader("Main Topic")
         selected_main = st.multiselect(
             "Select main topic keywords:",
-            search_terms['main_topic'],
-            default=search_terms['main_topic'],
+            main_topic,
+            default=main_topic,
             key="main_select"
         )
 
-        st.subheader("Academic Keywords (OpenAlex)")
-        selected_openalex = st.multiselect(
+        st.subheader("Secondary Topic")
+        selected_secondary = st.multiselect(
             "Select academic keywords:",
-            search_terms['openalex'],
-            default=search_terms['openalex'],
-            key="openalex_select"
-        )
-
-        st.subheader("Patent Keywords (PatentView)")
-        selected_patentview = st.multiselect(
-            "Select patent keywords:",
-            search_terms['patentview'],
-            default=search_terms['patentview'],
-            key="patentview_select"
+            secondary_topic,
+            default=secondary_topic,
+            key="secondary_topic_select"
         )
 
         st.subheader("Add Manual Keywords (comma-separated)")
         additional_main = st.text_input("Add Main Topic keywords:", key="add_main")
-        additional_openalex = st.text_input("Add Academic keywords:", key="add_openalex")
-        additional_patentview = st.text_input("Add Patent keywords:", key="add_patentview")
+        additional_secondary = st.text_input("Add Secondary keywords:", key="add_secondary")
 
         if st.button("Finalize Keywords"):
+            manual_main = [kw.strip() for kw in additional_main.split(",") if kw.strip()]
+            manual_secondary = [kw.strip() for kw in additional_secondary.split(",") if kw.strip()]
 
-            manual_main = [kw.strip() for kw in additional_main.split(",")] if additional_main else []
-            manual_openalex = [kw.strip() for kw in additional_openalex.split(",")] if additional_openalex else []
-            manual_patentview = [kw.strip() for kw in additional_patentview.split(",")] if additional_patentview else []
-
-            final_main = selected_main + manual_main
-            final_openalex = selected_openalex + manual_openalex
-            final_patentview = selected_patentview + manual_patentview
-
-            st.session_state.final_keywords = {
-                'main_topic': final_main,
-                'openalex': final_openalex,
-                'patentview': final_patentview
+            final_keywords = {
+                "main_topic": selected_main + manual_main,
+                "secondary_topic": selected_secondary + manual_secondary
             }
 
+            st.session_state.final_keywords = final_keywords
             st.success("Keywords finalized!")
