@@ -70,12 +70,12 @@ def fetch_patentview_data(search_term: str,
 
 
 # Entry point function for patentviw pipeline
-def run_patentview_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataFrame:
+def run_patentview_pipeline(main_topic: str, secondary_keywords: list[str]) -> pd.DataFrame:
     """
     Main pipeline entry: fetch patenview data based on search terms.
     """
-    main_topic=search_terms_dict["main_topic"][0]
-    secondary_keywords=search_terms_dict["secondary_topic"]
+    # main_topic=search_terms_dict["main_topic"][0]
+    # secondary_keywords=search_terms_dict["secondary_topic"]
     
     # SECTION 1: RESEARCH QUERY
     # Fetche the patview data
@@ -147,7 +147,13 @@ def run_patentview_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataF
 
     df.loc[:,'cpc_group_title'] = df['cpc_group_id'].map(cpc_dict)
     missing_report(df, "cpc_group_title")
+    
+    print("patentview dataframe final shape before reset:", df.shape)
 
+    # Reset the index so it runs 0,1,2,…n-1
+    df = df.reset_index(drop=True)
+
+    print("patentview dataframe final shape after reset:", df.shape)
     
     return df
 
@@ -159,7 +165,9 @@ if __name__ == "__main__":
         "secondary_topic": ['manufacturing', 'mold', 'injection', 'drug']
     }
 
-    df = run_patentview_pipeline(search_terms_dict)
+    df = run_patentview_pipeline(main_topic = search_terms_dict["main_topic"][0], 
+                               secondary_keywords= search_terms_dict["secondary_topic"] )
+    
     
     
     ####

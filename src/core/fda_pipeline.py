@@ -56,12 +56,12 @@ def search_fda_510k(keyword: str,
 
 
 # Entry point function for OpenAlex pipeline
-def run_fda_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataFrame:
+def run_fda_pipeline(main_topic: str, secondary_keywords: list[str]) -> pd.DataFrame:
     """
     Main pipeline entry: fetch OpenAlex data based on search terms.
     """
-    main_topic=search_terms_dict["main_topic"][0]
-    secondary_keywords=search_terms_dict["secondary_topic"]
+    # main_topic=search_terms_dict["main_topic"][0]
+    # secondary_keywords=search_terms_dict["secondary_topic"]
     
     # SECTION 1: RESEARCH QUERY
     # Run the FDA search
@@ -103,6 +103,13 @@ def run_fda_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataFrame:
     df.loc[:,"product_description"] = df["product_code"].map(desc_map)
     
     print("The unique product code:", df["product_code"].unique())
+    
+    print("fda dataframe final shape before reset:", df.shape)
+
+    # Reset the index so it runs 0,1,2,…n-1
+    df = df.reset_index(drop=True)
+
+    print("fda dataframe final shape after reset:", df.shape)
 
     
     return df
@@ -115,7 +122,8 @@ if __name__ == "__main__":
         "secondary_topic": ['manufacturing', 'mold', 'injection', 'drug']
     }
 
-    df = run_fda_pipeline(search_terms_dict)
+    df = run_fda_pipeline(main_topic = search_terms_dict["main_topic"][0], 
+                               secondary_keywords= search_terms_dict["secondary_topic"] )
     
     
     ####

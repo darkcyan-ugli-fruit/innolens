@@ -15,3 +15,7 @@ def run_keyword_extraction():
             search_terms = extract_search_terms(research_objective)
             st.session_state.search_terms = search_terms
             st.session_state.final_keywords = None
+            st.session_state.research_objective = research_objective
+            st.success("Keywords extracted and stored in session state.")
+
+

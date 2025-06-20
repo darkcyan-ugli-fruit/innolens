@@ -13,8 +13,6 @@ from utils.nested_json import safe_get
 from utils.pandas_utils import check_and_remove_duplicates, missing_report
 from utils.openai_utils import load_openai_client
 
-
-
 def openalex_query_api(
     query_result: str,
     url: str,
@@ -171,26 +169,26 @@ def get_justification(title: str, abstract: str, objective:str)-> str:
     except Exception as e:
         return f"ERROR: {e}"
     
-def process_row(row: pd.Series, search_terms_dict: dict[str, list[str]]) -> pd.Series:
-    output = get_justification(row["title"], row["abstract"], search_terms_dict)
+def process_row(title: str, abstract: str, objective: str) -> pd.Series:
+    output = get_justification(title, abstract, objective)
     output_lower = output.lower()
-    
+
     if output_lower.startswith("yes"):
         relevant = "yes"
     elif output_lower.startswith("no"):
         relevant = "no"
     else:
         relevant = "unclear"
-        
+
     return pd.Series({"relevant": relevant, "justification": output})
 
 # Entry point function for OpenAlex pipeline
-def run_openalex_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataFrame:
+def run_openalex_pipeline(main_topic: str, secondary_keywords: list[str], research_objective: str) -> pd.DataFrame:
     """
     Main pipeline entry: fetch OpenAlex data based on search terms.
     """
-    main_topic=search_terms_dict["main_topic"][0]
-    secondary_keywords=search_terms_dict["secondary_topic"]
+    # main_topic=search_terms_dict["main_topic"][0]
+    # secondary_keywords=search_terms_dict["secondary_topic"]
     
     print(main_topic)
     print(secondary_keywords)
@@ -265,7 +263,16 @@ def run_openalex_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataFra
     # SECTION 5: IDENTIFY RELEVANT PAPERS
     # Apply the function to the entire DataFrame
     print("Started relevant paper identification...")
-    df[["relevant", "justification"]] = df.apply(process_row, search_terms_dict)
+    relevants = []
+    justifications = []
+
+    for _, row in df.iterrows():
+        result = process_row(row["title"], row["abstract"], research_objective)
+        relevants.append(result["relevant"])
+        justifications.append(result["justification"])
+
+    df["relevant"] = relevants
+    df["justification"] = justifications
     print("Relevant paper identification is complete")
     
     # Show full column contents and more columns
@@ -273,7 +280,7 @@ def run_openalex_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataFra
     print("The dataframe shape of all papers:", df.shape)
 
     # Filter relevant papers
-    df: pd.DataFrame = df[df["relevant" == "Yes"]].copy()
+    df: pd.DataFrame = df[df['relevant'].str.lower() == 'yes'].copy()
 
     # Print shape
     print(f"The dataframe shape of relevant papers: {df.shape}")
@@ -286,7 +293,15 @@ def run_openalex_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataFra
     # Extract the year and store it in a new column 'year'
     df['year'] = df['publication_date'].dt.year
     
-    return None
+
+    print("openalex dataframe final shape before reset:", df.shape)
+
+    # Reset the index so it runs 0,1,2,…n-1
+    df = df.reset_index(drop=True)
+
+    print("openalex dataframe final shape after reset:", df.shape)
+    
+    return df
 
 
 # Example usage block (for testing or CLI)
@@ -295,8 +310,17 @@ if __name__ == "__main__":
         "main_topic": ["soft contact lens"],
         "secondary_topic": ['manufacturing', 'mold', 'injection', 'drug']
     }
+    
+    # Research objective
+    CLIENT_OBJECTIVE: str = """
+    At present, one of our clients is looking to speak with professionals who have insights about the emerging technologies 
+    in soft contact lens manufacturing, particularly non-injection moulded methods. They would broadly like to understand how 
+    these technologies are reshaping the industry—from on-demand manufacturing to smart, drug-delivery-enabled lenses.
+    """
 
-    df = run_openalex_pipeline(search_terms_dict)
+    df = run_openalex_pipeline(main_topic = search_terms_dict["main_topic"][0], 
+                               secondary_keywords= search_terms_dict["secondary_topic"],
+                               research_objective = CLIENT_OBJECTIVE)
     
     
     ####

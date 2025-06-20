@@ -8,9 +8,11 @@ def run_fda_step():
 
     st.subheader("💊 FDA Results")
     with st.spinner("Querying FDA Database..."):
-        df = run_fda_pipeline(main_topic, secondary)
-        if df is not None:
-            st.success(f"Fetched {len(df)} FDA records.")
-            st.dataframe(df)
+        fda_df = run_fda_pipeline(main_topic, secondary)
+        st.write("Shape in Streamlit:", fda_df.shape)
+        
+        if fda_df is not None:
+            st.success(f"Fetched {len(fda_df)} FDA records.")
+            st.dataframe(fda_df)
         else:
             st.warning("No results returned from FDA API.")
