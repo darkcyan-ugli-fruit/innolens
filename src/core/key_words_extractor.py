@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from openai import OpenAI as OpenAIClient  # Rename for clarity
 from openai.types.responses import Response
 import json
-from utils.openai_client import load_openai_client
+from utils.openai_utils import load_openai_client
 
 OPENAI_MODEL = "gpt-4o-mini"
 

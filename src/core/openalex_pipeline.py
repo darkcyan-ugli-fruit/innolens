@@ -5,6 +5,8 @@ import pandas as pd
 import time
 import json
 from typing import Any
+from openai import OpenAI as OpenAIClient
+from openai.types.responses import Response
 
 from config.openalex_config import OPENALEX_URL, MAILTO, OPENALEX_PER_PAGE, PAGE
 from utils.nested_json import safe_get
@@ -169,7 +171,7 @@ def get_justification(title: str, abstract: str, objective:str)-> str:
     except Exception as e:
         return f"ERROR: {e}"
     
-def process_row(row: pd.Series) -> pd.Series:
+def process_row(row: pd.Series, search_terms_dict: dict[str, list[str]]) -> pd.Series:
     output = get_justification(row["title"], row["abstract"], search_terms_dict)
     output_lower = output.lower()
     
@@ -183,10 +185,17 @@ def process_row(row: pd.Series) -> pd.Series:
     return pd.Series({"relevant": relevant, "justification": output})
 
 # Entry point function for OpenAlex pipeline
-def run_openalex_pipeline(main_topic: str, secondary_keywords: list[str], verbose: bool = False) -> pd.DataFrame:
+def run_openalex_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataFrame:
     """
     Main pipeline entry: fetch OpenAlex data based on search terms.
     """
+    main_topic=search_terms_dict["main_topic"][0]
+    secondary_keywords=search_terms_dict["secondary_topic"]
+    
+    print(main_topic)
+    print(secondary_keywords)
+    
+    
     # SECTION 1: QUERY OPENALEX
     # Launch the paper search
     df = fetch_openalex_data(
@@ -256,7 +265,7 @@ def run_openalex_pipeline(main_topic: str, secondary_keywords: list[str], verbos
     # SECTION 5: IDENTIFY RELEVANT PAPERS
     # Apply the function to the entire DataFrame
     print("Started relevant paper identification...")
-    df[["relevant", "justification"]] = df.apply(process_row, axis=1)
+    df[["relevant", "justification"]] = df.apply(process_row, search_terms_dict)
     print("Relevant paper identification is complete")
     
     # Show full column contents and more columns
@@ -277,7 +286,7 @@ def run_openalex_pipeline(main_topic: str, secondary_keywords: list[str], verbos
     # Extract the year and store it in a new column 'year'
     df['year'] = df['publication_date'].dt.year
     
-    return df
+    return None
 
 
 # Example usage block (for testing or CLI)
@@ -287,10 +296,7 @@ if __name__ == "__main__":
         "secondary_topic": ['manufacturing', 'mold', 'injection', 'drug']
     }
 
-    df = run_openalex_pipeline(
-        main_topic=search_terms_dict["main_topic"][0],
-        secondary_keywords=search_terms_dict["secondary_topic"]
-    )
+    df = run_openalex_pipeline(search_terms_dict)
     
     
     ####

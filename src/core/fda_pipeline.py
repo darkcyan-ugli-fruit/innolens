@@ -56,10 +56,13 @@ def search_fda_510k(keyword: str,
 
 
 # Entry point function for OpenAlex pipeline
-def run_fda_pipeline(main_topic: str, secondary_keywords: list[str], verbose: bool = False) -> pd.DataFrame:
+def run_fda_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataFrame:
     """
-    Main pipeline entry: fetch FDA data based on search terms.
+    Main pipeline entry: fetch OpenAlex data based on search terms.
     """
+    main_topic=search_terms_dict["main_topic"][0]
+    secondary_keywords=search_terms_dict["secondary_topic"]
+    
     # SECTION 1: RESEARCH QUERY
     # Run the FDA search
     df: pd.DataFrame = search_fda_510k(main_topic, verbose = False)
@@ -112,10 +115,7 @@ if __name__ == "__main__":
         "secondary_topic": ['manufacturing', 'mold', 'injection', 'drug']
     }
 
-    df = run_fda_pipeline(
-        main_topic=search_terms_dict["main_topic"][0],
-        secondary_keywords=search_terms_dict["secondary_topic"]
-    )
+    df = run_fda_pipeline(search_terms_dict)
     
     
     ####

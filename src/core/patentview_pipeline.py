@@ -70,10 +70,13 @@ def fetch_patentview_data(search_term: str,
 
 
 # Entry point function for patentviw pipeline
-def run_patentview_pipeline(main_topic: str, secondary_keywords: list[str], verbose: bool = False) -> pd.DataFrame:
+def run_patentview_pipeline(search_terms_dict: dict[str, list[str]]) -> pd.DataFrame:
     """
-    Main pipeline entry: fetch patentview data based on search terms.
+    Main pipeline entry: fetch patenview data based on search terms.
     """
+    main_topic=search_terms_dict["main_topic"][0]
+    secondary_keywords=search_terms_dict["secondary_topic"]
+    
     # SECTION 1: RESEARCH QUERY
     # Fetche the patview data
     print("Fetching data started...")
@@ -156,10 +159,7 @@ if __name__ == "__main__":
         "secondary_topic": ['manufacturing', 'mold', 'injection', 'drug']
     }
 
-    df = run_patentview_pipeline(
-        main_topic=search_terms_dict["main_topic"][0],
-        secondary_keywords=search_terms_dict["secondary_topic"]
-    )
+    df = run_patentview_pipeline(search_terms_dict)
     
     
     ####
