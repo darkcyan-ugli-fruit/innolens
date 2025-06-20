@@ -187,7 +187,7 @@ def run_openalex_pipeline(main_topic: str, secondary_keywords: list[str], verbos
     """
     Main pipeline entry: fetch OpenAlex data based on search terms.
     """
-    # QUERY OPENALEX
+    # SECTION 1: QUERY OPENALEX
     # Launch the paper search
     df = fetch_openalex_data(
         main_topic=main_topic,
@@ -197,7 +197,7 @@ def run_openalex_pipeline(main_topic: str, secondary_keywords: list[str], verbos
     # FILTER RELEVANT DATA
     df: pd.DataFrame = openalex_filter_col(df)
     
-    # DATA EXTRACTION LOGIC
+    # SECTION 2:DATA EXTRACTION LOGIC
     print("Started the extraction: author_display_name...")
     df['first_author_display_name'] = df['authorships'].apply(
         lambda x: safe_get(x, [0, 'author', 'display_name'])
@@ -218,7 +218,7 @@ def run_openalex_pipeline(main_topic: str, secondary_keywords: list[str], verbos
         lambda x: safe_get(x, [0, 'institutions', 0, 'country_code'])
     )
     
-    # ABSTRACT UTILITY
+    # SECTION 3:ABSTRACT UTILITY
     # Extract abstrac: apply your reconstruct_abstract function
     print("Abtract extration started...")
     df.loc[:, 'abstract'] = df['abstract_inverted_index'].apply(reconstruct_abstract)
@@ -237,7 +237,7 @@ def run_openalex_pipeline(main_topic: str, secondary_keywords: list[str], verbos
 
     print(df.shape)   
     
-    # DATAFRAME CLEANING
+    # SECTION 4: DATAFRAME CLEANING
     df = check_and_remove_duplicates(df, col="title")
     # Count None or NaN in 'applicant_organization' column
     none_count_openalex: int = df['institution_display_name'].isna().sum()
@@ -253,7 +253,7 @@ def run_openalex_pipeline(main_topic: str, secondary_keywords: list[str], verbos
     # Print first rows of dataframe
     df[["title", "publication_date", "institution_country_code", "institution_display_name"]].head()
     
-    # IDENTIFY RELEVANT PAPERS
+    # SECTION 5: IDENTIFY RELEVANT PAPERS
     # Apply the function to the entire DataFrame
     print("Started relevant paper identification...")
     df[["relevant", "justification"]] = df.apply(process_row, axis=1)
@@ -264,7 +264,7 @@ def run_openalex_pipeline(main_topic: str, secondary_keywords: list[str], verbos
     print("The dataframe shape of all papers:", df.shape)
 
     # Filter relevant papers
-    df: pd.DataFrame = df.query("relevant == 'yes'").copy()
+    df: pd.DataFrame = df[df["relevant" == "Yes"]].copy()
 
     # Print shape
     print(f"The dataframe shape of relevant papers: {df.shape}")

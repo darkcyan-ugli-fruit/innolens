@@ -5,17 +5,14 @@ import pandas as pd
 import time
 import json
 from typing import Any
+from dotenv import load_dotenv
 
 from config.patentview_config import PATENTVIEW_API_KEY, PATENTVIEW_SIZE, PATENTVIEW_URL, PATENTVIEW_HEADERS
 from utils.nested_json import safe_get
 from utils.pandas_utils import check_and_remove_duplicates, missing_report
 # from utils.openai_utils import load_openai_client
 
-import requests
-import json
-import pandas as pd
-import os
-from dotenv import load_dotenv
+
 
 # # Load API key
 # load_dotenv()
@@ -72,10 +69,10 @@ def fetch_patentview_data(search_term: str,
         return pd.DataFrame()
 
 
-# Entry point function for OpenAlex pipeline
+# Entry point function for patentviw pipeline
 def run_patentview_pipeline(main_topic: str, secondary_keywords: list[str], verbose: bool = False) -> pd.DataFrame:
     """
-    Main pipeline entry: fetch OpenAlex data based on search terms.
+    Main pipeline entry: fetch patentview data based on search terms.
     """
     # SECTION 1: RESEARCH QUERY
     # Fetche the patview data
