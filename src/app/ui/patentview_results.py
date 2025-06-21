@@ -7,12 +7,17 @@ def run_patentview_step():
     secondary = search_terms["secondary_topic"]
 
     st.subheader("📄 PatentView Search Results")
-    with st.spinner("Querying PatentView..."):
-        patenview_df = run_patentview_pipeline(main_topic, secondary)
-        st.write("Shape in Streamlit:", patenview_df.shape)
 
-        if patenview_df is not None:
-            st.success(f"Fetched {len(patenview_df)} patents.")
-            st.dataframe(patenview_df)
-        else:
-            st.warning("No results returned from PatentView.")
+    if "patentview_df" not in st.session_state:
+        with st.spinner("Querying PatentView..."):
+            patentview_df = run_patentview_pipeline(main_topic, secondary)
+            st.session_state.patentview_df = patentview_df
+    else:
+        patentview_df = st.session_state.patentview_df
+
+    if patentview_df is not None:
+        st.success(f"Fetched {len(patentview_df)} patents.")
+        st.write("Shape in Streamlit:", patentview_df.shape)
+        st.dataframe(patentview_df)
+    else:
+        st.warning("No results returned from PatentView.")

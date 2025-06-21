@@ -74,9 +74,10 @@ def run_fda_pipeline(main_topic: str, secondary_keywords: list[str]) -> pd.DataF
     df: pd.DataFrame = df[['device_name', 'applicant', 'decision_date', 'k_number', 'decision_description', 'contact', 'product_code','country_code']].copy()
 
     # convert to datetime
-    df ['decision_date'] = pd.to_datetime(df ['decision_date'])
+    df['decision_date'] = pd.to_datetime(df ['decision_date'])
+    # Extract the year and store it in a new column 'year'
+    df['year'] = df ['decision_date'].dt.year
 
-    print(df .dtypes)
     
     # SECTION 3: Filter by product code
     fda_product_code_df = pd.read_excel("data/no_careproducts_PCDExcelReport26.xls", sheet_name="Sheet1")

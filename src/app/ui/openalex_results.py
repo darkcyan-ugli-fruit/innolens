@@ -8,11 +8,17 @@ def run_openalex_step():
     objective = st.session_state.research_objective  
 
     st.subheader("📚 OpenAlex Search Results")
-    with st.spinner("Querying OpenAlex..."):
-        openalex_df = run_openalex_pipeline(main_topic, secondary, objective) 
+
+    if "openalex_df" not in st.session_state:
+        with st.spinner("Querying OpenAlex..."):
+            openalex_df = run_openalex_pipeline(main_topic, secondary, objective)
+            st.session_state.openalex_df = openalex_df
+    else:
+        openalex_df = st.session_state.openalex_df
+
+    if openalex_df is not None:
+        st.success(f"Fetched {len(openalex_df)} papers.")
         st.write("Shape in Streamlit:", openalex_df.shape)
-        if openalex_df is not None:
-            st.success(f"Fetched {len(openalex_df)} papers.")
-            st.dataframe(openalex_df)
-        else:
-            st.warning("No results returned from OpenAlex.")
+        st.dataframe(openalex_df)
+    else:
+        st.warning("No results returned from OpenAlex.")

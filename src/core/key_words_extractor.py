@@ -5,9 +5,7 @@ from dotenv import load_dotenv
 from openai import OpenAI as OpenAIClient  # Rename for clarity
 from openai.types.responses import Response
 import json
-from utils.openai_utils import load_openai_client
-
-OPENAI_MODEL = "gpt-4o-mini"
+from utils.openai_utils import load_openai_client, OPENAI_MODEL
 
 def extract_search_terms(research_objective: str,
                          client: OpenAIClient = load_openai_client(),
