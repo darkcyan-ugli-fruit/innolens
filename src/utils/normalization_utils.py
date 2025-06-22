@@ -7,7 +7,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pandas as pd
 import json
-from openai.types.responses import Response
+# from openai.types.responses import Response
+from typing import Any
 from utils.openai_utils import load_openai_client, OPENAI_MODEL
 
 
@@ -63,7 +64,7 @@ def normalize_company_names(
     # 3. Send to OpenAI
     try:
         client = load_openai_client()
-        response: Response = client.chat.completions.create(
+        response: Any = client.chat.completions.create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}]
         )
