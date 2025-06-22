@@ -37,13 +37,6 @@ def plot_top_fda_applicants(
     """
     Plots the top N FDA 510(k) applicants (cleaned) as a horizontal bar chart.
 
-    Args:
-        fda_df (pd.DataFrame): DataFrame with an 'applicant_standardized' column.
-        top_n (int): Number of top applicants to show (default 10).
-        show_inline (bool): If True, calls plt.show() so notebooks render the plot immediately.
-
-    Returns:
-        fig (plt.Figure): The Matplotlib figure object.
     """
     # Copy to avoid mutating original
     df = fda_df.copy()
@@ -77,12 +70,6 @@ def plot_fda_approvals_by_product_code(
     """
     Plots a stacked bar chart of FDA device approvals per year, broken out by product code.
 
-    Args:
-        fda_df (pd.DataFrame): DataFrame with 'decision_date' and 'product_code' columns.
-        show_inline (bool): If True, calls plt.show() so notebooks render the plot immediately.
-
-    Returns:
-        fig (plt.Figure): The Matplotlib figure object.
     """
     # 1. Prepare data
     df = fda_df.copy()
@@ -97,20 +84,16 @@ def plot_fda_approvals_by_product_code(
         .unstack(fill_value=0)
     )
 
-    # 3. Choose a colormap with enough distinct colors
-    n_codes = product_year_trend.shape[1]
-    cmap = plt.get_cmap('tab20', n_codes)
-
-    # 4. Plot
+    # 3. Plot
     fig, ax = plt.subplots(figsize=(12, 6))
     product_year_trend.plot(
         kind='bar',
         stacked=True,
-        colormap=cmap,
+        colormap='tab20',
         ax=ax
     )
 
-    # 5. Decorations
+    # 4. Decorations
     ax.set_title("FDA Device Approvals by Product Code per Year", fontsize=16)
     ax.set_xlabel("Year", fontsize=14)
     ax.set_ylabel("Number of Approvals", fontsize=14)
@@ -139,13 +122,6 @@ def plot_patent_trend_common_companies(
     """
     Plots number of patents per year for companies found in both FDA and PatentView datasets.
 
-    Args:
-        patentview_df (pd.DataFrame): PatentView data with 'year' and 'assignee_standardized' columns.
-        common_companies (set[str]): Set of company names present in both datasets.
-        show_inline (bool): If True, calls plt.show() (e.g., for Jupyter use).
-
-    Returns:
-        fig (plt.Figure): Matplotlib figure object.
     """
     # 1. Filter relevant patents
     filtered_patentview = patentview_df[
@@ -180,13 +156,6 @@ def plot_fda_trend_common_companies(
     Plots the number of FDA 510(k) submissions per year for companies 
     found in both FDA and PatentView datasets.
 
-    Args:
-        fda_df (pd.DataFrame): FDA data with 'applicant_standardized' and 'year' columns.
-        common_companies (set[str]): Set of overlapping company names.
-        show_inline (bool): If True, calls plt.show() for Jupyter notebooks.
-
-    Returns:
-        fig (plt.Figure): Matplotlib figure object.
     """
     # 1. Filter to common companies
     filtered_fda = fda_df[fda_df['applicant_standardized'].isin(common_companies)]
@@ -304,13 +273,6 @@ def plot_top_last_authors(
     """
     Plots a horizontal bar chart of the top last authors by number of papers.
 
-    Args:
-        df (pd.DataFrame): DataFrame with 'last_author_display_name' column.
-        top_n (int): Number of top authors to show (default is 10).
-        show_inline (bool): If True, calls plt.show() so notebooks render the plot immediately.
-
-    Returns:
-        fig (plt.Figure): The Matplotlib figure object.
     """
     # Copy to avoid mutating original DataFrame
     data = df.copy()
