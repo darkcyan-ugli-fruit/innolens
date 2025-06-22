@@ -6,7 +6,7 @@ import time
 import json
 from typing import Any
 from openai import OpenAI as OpenAIClient
-from openai.types.responses import Response
+# from openai.types.responses import Response
 
 from config.openalex_config import OPENALEX_URL, MAILTO, OPENALEX_PER_PAGE, PAGE
 from utils.nested_json import safe_get
@@ -25,7 +25,7 @@ def openalex_query_api(
     Sends a GET request to the OpenAlex API and returns the list of results.
     """
     try:
-        response: requests.Response = requests.get(url, headers=headers, params=params, timeout=10)
+        response: Any = requests.get(url, headers=headers, params=params, timeout=10)
         response.raise_for_status()
         data: dict[str, Any] = response.json()
 
@@ -161,7 +161,7 @@ def get_justification(title: str, abstract: str, objective:str)-> str:
     client: OpenAIClient = load_openai_client()
     
     try:
-        response: Response = client.responses.create(
+        response: Any = client.responses.create(
         model="gpt-4o-mini",
         input = prompt
         )
