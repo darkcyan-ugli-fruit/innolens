@@ -7,7 +7,8 @@ import sys
 
 # ── Simple src/ path fix ──
 # Treat innolens/src/ as a top-level import folder
-src_dir = os.path.join(os.getcwd(), "src")
+cwd     = os.getcwd() # get the current working directory
+src_dir = os.path.join(cwd, "src") # yields "/home/user/innolens/src
 print(f"[DEBUG main.py] Inserting into sys.path: {src_dir}")
 if src_dir not in sys.path:
     sys.path.insert(0, src_dir)

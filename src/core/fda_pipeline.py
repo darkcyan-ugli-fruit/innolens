@@ -80,6 +80,7 @@ def run_fda_pipeline(main_topic: str, secondary_keywords: list[str]) -> pd.DataF
 
     
     # SECTION 3: Filter by product code
+    # This limits the research to contact lenses
     fda_product_code_df = pd.read_excel("data/no_careproducts_PCDExcelReport26.xls", sheet_name="Sheet1")
     print("The number of product code:", len(fda_product_code_df))
     
