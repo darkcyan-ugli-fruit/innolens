@@ -1,4 +1,17 @@
-# Usage: PYTHONPATH=src streamlit run src/app/main.py
+# Usage: streamlit run src/app/main.py
+
+# src/app/main.py
+
+import os
+import sys
+
+# ── Simple src/ path fix ──
+# Treat innolens/src/ as a top-level import folder
+src_dir = os.path.join(os.getcwd(), "src")
+print(f"[DEBUG main.py] Inserting into sys.path: {src_dir}")
+if src_dir not in sys.path:
+    sys.path.insert(0, src_dir)
+# ──────────────────────────
 
 import streamlit as st
 from utils.normalization_utils import normalize_company_names, find_common_companies

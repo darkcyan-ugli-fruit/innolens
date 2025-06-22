@@ -1,5 +1,11 @@
 # src/core/utils/openai_client.py
 
+import sys
+import os
+
+# Add 'src/' to path so we can import config and other top-level modules
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import streamlit as st
 from openai import OpenAI as OpenAIClient
 from config.openai_config import OPENAI_API_KEY

@@ -1,7 +1,16 @@
+import sys
+import os
+
+# Add 'src/' to Python path so utils can be imported consistently
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+
 import pandas as pd
 import json
 from openai.types.responses import Response
 from utils.openai_utils import load_openai_client, OPENAI_MODEL
+
+
 
 def normalize_company_names(
     patentview_df: pd.DataFrame,
