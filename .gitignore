@@ -8,7 +8,7 @@ presentation
 # Exclude files
 data/g_cpc_title.tsv
 data/PCDExcelReport26.xls
-data/no_careproducts_PCDExcelReport26.xls
+# data/no_careproducts_PCDExcelReport26.xls
 notebooks/02_my_notes.ipynb
 notebooks/01_innolens-pres.ipynb
 

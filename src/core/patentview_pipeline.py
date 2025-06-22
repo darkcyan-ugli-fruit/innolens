@@ -68,6 +68,14 @@ def fetch_patentview_data(search_term: str,
         print(f"Request failed with status {response.status_code}")
         return pd.DataFrame()
 
+def load_cpc_titles() -> pd.DataFrame:
+    url = "https://s3.amazonaws.com/data.patentsview.org/download/g_cpc_title.tsv.zip"
+    return pd.read_csv(
+        url,
+        sep="\t",          # tab-separated
+        compression="zip", # pandas unzips transparently
+        dtype=str          # keep codes as strings
+    )
 
 # Entry point function for patentviw pipeline
 def run_patentview_pipeline(main_topic: str, secondary_keywords: list[str]) -> pd.DataFrame:
@@ -130,7 +138,9 @@ def run_patentview_pipeline(main_topic: str, secondary_keywords: list[str]) -> p
     
     # SECTION 4: Add cooperative patent classification (cpc) description
     # Load the CPC title table
-    cpc_titles: pd.DataFrame = pd.read_csv('data/g_cpc_title.tsv', sep='\t')
+    
+    # cpc_titles: pd.DataFrame = pd.read_csv('data/g_cpc_title.tsv', sep='\t')
+    cpc_titles = load_cpc_titles() # insteal of loading local files, i download it from the web
     cpc_titles.head()
     
     # Rename column in cpc_titles to match your patentview_df
